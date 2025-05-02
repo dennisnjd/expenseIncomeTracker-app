@@ -7,7 +7,12 @@ import 'react-native-reanimated';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Regular: require('../assets/fonts/RobotoCondensed-Regular.ttf'),
+    Medium: require('../assets/fonts/RobotoCondensed-Medium.ttf'),
+    Light: require('../assets/fonts/RobotoCondensed-Light.ttf'),
+    Bold: require('../assets/fonts/RobotoCondensed-Bold.ttf'),
+    ExtraBold: require('../assets/fonts/RobotoCondensed-ExtraBold.ttf'),
+    SemiBold: require('../assets/fonts/RobotoCondensed-SemiBold.ttf'),
   });
 
 
@@ -18,7 +23,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DefaultTheme}>
-      <StatusBar style="auto" />
+      {/* <StatusBar style="auto" /> */}
       <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="protected" options={{ headerShown: false }} />
