@@ -1,16 +1,19 @@
-import { Collapsible } from '@components/Collapsible';
+import * as Haptics from 'expo-haptics';
 import React from 'react';
 import {
   Dimensions, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View, KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import { Image } from 'expo-image';
 import { scale as ws, verticalScale as vs, moderateScale } from 'react-native-size-matters';
 import { FontFamily } from '@constants/fonts';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { router } from 'expo-router';
+import useUserLogin from '@hooks/apis/useUserLogin';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -22,6 +25,12 @@ const Index = () => {
 
   const animatedOpacity = useSharedValue(0);
   const animatedHeight = useSharedValue(10);
+
+  // API to register the user
+  const { mutate: loginUser, isPending } = useUserLogin({
+    email,
+    password,
+  });
 
   const toggleExpand = () => {
     if (expanded) {
@@ -41,6 +50,11 @@ const Index = () => {
   const animatedTextOpacityStyle = useAnimatedStyle(() => ({
     opacity: animatedOpacity.value,
   }))
+
+  const handleLogin = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    loginUser();
+  };
 
   return (
 
@@ -103,9 +117,12 @@ const Index = () => {
 
               <TouchableOpacity
                 style={styles.loginButton}
-              // onPress={handleLogin}
+                onPress={handleLogin}
               >
-                <Text style={styles.loginButtonText}>LOGIN</Text>
+                {isPending ?
+                  <ActivityIndicator size="small" color="#fff" />
+                  : <Text style={styles.loginButtonText}>LOGIN</Text>
+                }
               </TouchableOpacity>
 
               <View style={styles.forgotContainer}>
@@ -113,7 +130,7 @@ const Index = () => {
                   <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.replace('/auth/register_user')}>
                   <Text style={styles.forgotText}>Not a user?</Text>
                 </TouchableOpacity>
               </View>
